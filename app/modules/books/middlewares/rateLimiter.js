@@ -8,7 +8,8 @@ const MAX_WINDOW_REQUEST_COUNT = 1;
 const WINDOW_LOG_INTERVAL_IN_HOURS = 1;
 
 const rateLimiterUsingThirdParty = rateLimit({
-  windowMs: WINDOW_SIZE_IN_HOURS * 60 * 60 * 1000, // 24 hrs in millseconds
+//   windowMs: 15 * 60 * 1000, // 15 minutes in milliseconds
+  windowMs: WINDOW_SIZE_IN_HOURS * 60 * 60 * 1000, // 24 hrs in milliseconds
   max: MAX_WINDOW_REQUEST_COUNT,
   message: `You have exceeded the ${MAX_WINDOW_REQUEST_COUNT} requests in ${WINDOW_SIZE_IN_HOURS} hrs limit!`,
   headers: true
@@ -60,7 +61,7 @@ exports.customRedisRateLimiter = async function (req, res, next) {
             if(totalWindowRequestsCount >= MAX_WINDOW_REQUEST_COUNT) {
                 res.status(429).json({
                     status: false, 
-                    msg: `You have exceeded the ${MAX_WINDOW_REQUEST_COUNT} requests in ${WINDOW_SIZE_IN_HOURS} limit`, 
+                    msg: `You have exceeded the ${MAX_WINDOW_REQUEST_COUNT} requests in ${WINDOW_SIZE_IN_HOURS} hrs limit`, 
                     data: [] 
                 });
             } else {
