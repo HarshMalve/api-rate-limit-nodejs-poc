@@ -4,7 +4,7 @@ const redis = require('redis');
 
 const redisClient = redis.createClient();
 const WINDOW_SIZE_IN_HOURS = 24;
-const MAX_WINDOW_REQUEST_COUNT = 1;
+const MAX_WINDOW_REQUEST_COUNT = 5;
 const WINDOW_LOG_INTERVAL_IN_HOURS = 1;
 
 const rateLimiterUsingThirdParty = rateLimit({
@@ -40,7 +40,7 @@ exports.customRedisRateLimiter = async function (req, res, next) {
                 };
                 newRecord.push(requestLog);
                 redisClient.set(req.ip, JSON.stringify(newRecord)); //storing record to redis
-                next();
+                return next();
             }
 
             // If record exists, parse it's value and calculcate number of requests the user has made within the last window
@@ -81,10 +81,10 @@ exports.customRedisRateLimiter = async function (req, res, next) {
                     });
                 }
                 redisClient.set(req.ip, JSON.stringify(data));
-                next();
+                return next();
             }
         });
     } catch (error) {
-        next(error);
+        return next(error);
     }
 };
